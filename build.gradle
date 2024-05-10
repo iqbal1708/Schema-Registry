@@ -1,0 +1,69 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://packages.confluent.io/maven/"
+        }
+        maven {
+            url = uri("https://jitpack.io")
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "com.github.imflog:kafka-schema-registry-gradle-plugin:1.6.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id "com.github.davidmc24.gradle.plugin.avro" version "1.3.0"
+    id "com.github.imflog.kafka-schema-registry-gradle-plugin" version "1.6.0"
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '21'
+}
+
+schemaRegistry {
+    url = 'https://psrc-4nrnd.us-central1.gcp.confluent.cloud'
+    credentials {
+        username = 'YQ3CBQX7EL6HJXNZ'
+        password = 'GGPftEwW+onItUSE8WbfJj2DpOmILZjLEQPjG7e8tD0v6ajwCbsS0seUjETcfFXZ'
+    }
+
+    register {
+        subject('avro-product', 'src/main/avro/product.avsc', 'AVRO')
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://packages.confluent.io/maven/")
+    }
+
+    maven {
+        url = uri("https://jitpack.io")
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    implementation 'org.apache.kafka:kafka-clients'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.apache.avro:avro:1.11.0'
+    implementation "io.confluent:kafka-avro-serializer:7.1.1"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
